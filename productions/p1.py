@@ -7,19 +7,26 @@ class P1():
     @staticmethod
     def apply(G: nx.Graph, offset = 1):
         El_node = None
-        for node in G.nodes(data=True):
-            if node[1]['label'] == 'El':
-                El_node = node
-                break
+        
+        # find isos and get pick first one
+        isomorphisms = find_isomorphisms(G, P1.left)
+        if len(isomorphisms) < 1:
+            return False
+        iso = isomorphisms[0]
+        nodes_in_G = list(iso.keys())
+        if len(nodes_in_G) != 1:
+            return False
+        node_id = nodes_in_G[0]
+        El_node = G.nodes(data=True)[node_id]
 
         if not El_node: return False
 
-        El_node[1]['label'] = 'el'
-        (pos_x, pos_y) = El_node[1]['pos']
-        G.add_node(El_node[0]+1, label='I', pos=(pos_x, pos_y-offset))
-        G.add_edge(El_node[0], El_node[0]+1)
+        El_node['label'] = 'el'
+        (pos_x, pos_y) = El_node['pos']
+        G.add_node(node_id+1, label='I', pos=(pos_x, pos_y-offset))
+        G.add_edge(node_id, node_id+1)
 
-        I_node = (El_node[0]+1, G.nodes[El_node[0]+1])
+        I_node = (node_id+1, G.nodes[node_id+1])
         (pos_x, pos_y) = I_node[1]['pos']
 
         G.add_node(I_node[0]+1, label='E', pos=(pos_x-offset/2, pos_y-offset/2))
