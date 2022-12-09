@@ -30,11 +30,8 @@ jobs:
           pip --version
           pip install -r requirements.txt
 
-      - name: Run example script
-        run: python example_single_track.py
-
       - name: Install test dependencies
         run: pip install pytest
 
       - name: Run unit and integration tests
-        run: python -m pytest
+        run: python -m pytest tests
