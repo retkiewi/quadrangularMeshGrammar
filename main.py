@@ -11,9 +11,9 @@ def main(args):
     G.add_node(1, label='El', pos=(0, 0), layer=0)
 
     P1.apply(G)
-    P3.apply(G)
+    P4.apply(G)
 
-    draw_graph(G)
+    draw_graph(G, layer=2)
     # draw_graph(G, 1) # draw layer 1
 
 
