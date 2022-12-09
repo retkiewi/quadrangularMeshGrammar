@@ -19,9 +19,7 @@ def draw_graph(graph, layer=None):
         graph = graph.subgraph(layer_nodes)
 
     labels = nx.get_node_attributes(graph,'label')
-    print(labels)
     node_colors = list(map(map_label_to_color, labels.values()))
-    print(node_colors)
 
     nx.draw(graph, pos=nx.get_node_attributes(graph,'pos'),
             labels=labels, font_size=14,

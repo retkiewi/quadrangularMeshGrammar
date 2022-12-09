@@ -17,6 +17,8 @@ class P1():
 
         El_node[1]['label'] = 'el'
         (pos_x, pos_y) = El_node[1]['pos']
+        layer = El_node[1]['layer']
+
         G.add_node(El_node[0]+1, label='I', pos=(pos_x, pos_y-offset), layer=layer+1)
         G.add_edge(El_node[0], El_node[0]+1)
 

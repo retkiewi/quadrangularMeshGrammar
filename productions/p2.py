@@ -1,5 +1,6 @@
 import networkx as nx
-from productions.utils import find_isomorphisms
+from productions.decorators import first_isomorphism
+from typing import Dict
 
 class P2():
     left = nx.Graph()
@@ -14,14 +15,12 @@ class P2():
     left.add_edge(4, 5)
 
     @staticmethod
-    def apply(G: nx.Graph, offset = 1):
-        isomorphisms = find_isomorphisms(G, P2.left)
-        if len(isomorphisms) < 1:
+    @first_isomorphism(left)
+    def apply(G: nx.Graph, offset = 1, isomorphism: Dict = None):
+        if isomorphism is None:
             return False
-        iso = isomorphisms[0]
-        print("iso", iso)
-        nodes_in_G = list(iso.keys())
-        print("nig", nodes_in_G)
+
+        nodes_in_G = list(isomorphism.keys())
         
         I_node = None
         I_node_id = None
