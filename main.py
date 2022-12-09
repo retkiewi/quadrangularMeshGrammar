@@ -8,7 +8,7 @@ def main(args):
     G = nx.Graph()
     G.add_node(1, node_color='red', label='El', pos=(0, 0))
 
-    P1.apply(G)
+    P1.apply(G, offset=15)
 
     nx.draw(G, nx.get_node_attributes(G,'pos'), labels=nx.get_node_attributes(G,'label'), font_size=10)
     plt.show()

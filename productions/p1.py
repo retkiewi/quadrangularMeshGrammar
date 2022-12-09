@@ -8,9 +8,8 @@ class P1():
 
     @staticmethod
     @first_isomorphism(left)
-    def apply(G: nx.Graph, offset = 1, isomorphism: Dict = None):
-        if isomorphism is None:
-            return False
+    def apply(G: nx.Graph, offset: int = 1, isomorphism: Dict = None):
+        if isomorphism is None:return False
         
         El_node_id = list(isomorphism.keys())[0]
         El_node = (El_node_id, G.nodes[El_node_id])
