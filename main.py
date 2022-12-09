@@ -13,13 +13,12 @@ def main(args):
 
     P1.apply(G)
     P2.apply(G)
+    P2.apply(G)
+    P2.apply(G)
 
     draw_graph(G)
-    # draw_graph(G, 0)
-    # draw_graph(G, 2)
-    plt.show()
+    # draw_graph(G, 1) # draw layer 1
 
 if __name__ == '__main__':
     parser  = argparse.ArgumentParser()
-    # add your args here
     main(parser.parse_args(sys.argv[1:]))

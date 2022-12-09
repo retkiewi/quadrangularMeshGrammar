@@ -1,14 +1,9 @@
 import networkx as nx
+import matplotlib.pyplot as plt
 
 def map_label_to_color(label):
-    label_lc = label.lower()
-    if label_lc == 'el':
-        return '#ff0000'
-    elif label_lc == 'i':
-        return '#ffa500'
-    elif label_lc == 'e':
-        return '#5e90d7'
-    return '#c1c1c1'
+    color_map = {'el' : '#ff0000', 'i': '#ffa500' , 'e':'#5e90d7'}
+    return color_map.get(label.lower(), '#c1c1c1') # get whats under label or default value
 
 def draw_graph(graph, layer=None):
     if layer != None:
@@ -24,3 +19,4 @@ def draw_graph(graph, layer=None):
     nx.draw(graph, pos=nx.get_node_attributes(graph,'pos'),
             labels=labels, font_size=14,
             node_size=700, node_color=node_colors)
+    plt.show()

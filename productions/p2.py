@@ -2,6 +2,7 @@ import networkx as nx
 from productions.decorators import first_isomorphism
 from typing import Dict
 
+
 class P2():
     left = nx.Graph()
     left.add_node(1, label='I')
@@ -36,8 +37,8 @@ class P2():
 
         size = G.number_of_nodes()
 
-        G.add_node(size+1, label='I', pos=(pos_x-offset/2, pos_y-2*offset), layer=layer+1)
-        G.add_node(size+2, label='I', pos=(pos_x+offset/2, pos_y-2*offset), layer=layer+1)
+        G.add_node(size+1, label='I', pos=(pos_x-offset/2, pos_y-3/2*offset), layer=layer+1)
+        G.add_node(size+2, label='I', pos=(pos_x+offset/2, pos_y-3/2*offset), layer=layer+1)
         G.add_edge(size+1, I_node_id)
         G.add_edge(size+2, I_node_id)
 
@@ -45,18 +46,15 @@ class P2():
         G.add_node(size+4, label='E', pos=(pos_x, pos_y-offset), layer=layer+1)
         G.add_node(size+5, label='E', pos=(pos_x+offset, pos_y-offset), layer=layer+1)
 
-        G.add_node(size+6, label='E', pos=(pos_x-offset, pos_y-3*offset), layer=layer+1)
-        G.add_node(size+7, label='E', pos=(pos_x, pos_y-3*offset), layer=layer+1)
-        G.add_node(size+8, label='E', pos=(pos_x+offset, pos_y-3*offset), layer=layer+1)
+        G.add_node(size+6, label='E', pos=(pos_x-offset, pos_y-2*offset), layer=layer+1)
+        G.add_node(size+7, label='E', pos=(pos_x, pos_y-2*offset), layer=layer+1)
+        G.add_node(size+8, label='E', pos=(pos_x+offset, pos_y-2*offset), layer=layer+1)
 
         G.add_edges_from([(size+1, size+i) for i in (3,4,6,7)])
         G.add_edges_from([(size+2, size+i) for i in (4,5,7,8)])
-        G.add_edge(size+3, size+4)
+        G.add_edges_from([(size+i, size+i+1) for i in (3,4,6,7)])
         G.add_edge(size+3, size+6)
-        G.add_edge(size+4, size+5)
         G.add_edge(size+4, size+7)
         G.add_edge(size+5, size+8)
-        G.add_edge(size+6, size+7)
-        G.add_edge(size+7, size+8)
 
         return True
