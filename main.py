@@ -1,9 +1,8 @@
-import sys
 import argparse
-import networkx as nx
-from productions.p1 import P1
-from productions.p2 import P2
+import sys
 import matplotlib.pyplot as plt
+import networkx as nx
+from productions import P1, P2
 from visualization import draw_graph
 
 

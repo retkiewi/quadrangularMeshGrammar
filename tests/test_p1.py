@@ -1,16 +1,9 @@
-import pytest
-import networkx as nx
-
 import matplotlib.pyplot as plt
+import networkx as nx
+import pytest
 
-import os
-import sys
-currentdir = os.path.dirname(os.path.realpath(__file__))
-parentdir = os.path.dirname(currentdir)
-sys.path.append(parentdir)
-
-# from visualization import draw_graph
 from productions import P1
+# from visualization import draw_graph
 
 
 def test_p1():
