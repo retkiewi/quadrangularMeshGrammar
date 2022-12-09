@@ -1,0 +1,37 @@
+name: Python tests
+
+on:
+  push:
+    branches: [ master ]
+    tags: ['*']
+  pull_request:
+    branches: [ master ]
+  release:
+    types: [ published ]
+
+jobs:
+  example_test:
+    if: >
+      !contains(needs.initialise.outputs.commit_message, '[ci skip]') &&
+      !contains(needs.initialise.outputs.commit_message, '[skip ci]')
+    name: Run tests
+    runs-on:  ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4.3.0
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies and iontracks package
+        run: |
+          python --version
+          pip --version
+          pip install -r requirements.txt
+
+      - name: Install test dependencies
+        run: pip install pytest
+
+      - name: Run unit and integration tests
+        run: python -m pytest tests
