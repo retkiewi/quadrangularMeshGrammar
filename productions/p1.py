@@ -1,18 +1,18 @@
 import networkx as nx
+from productions.decorators import first_isomorphism
+from typing import Dict
 
 class P1():
     left = nx.Graph()
     left.add_node(1, label='El')
 
     @staticmethod
-    def apply(G: nx.Graph, offset = 1):
-        El_node = None
-        for node in G.nodes(data=True):
-            if node[1]['label'] == 'El':
-                El_node = node
-                break
-
-        if not El_node: return False
+    @first_isomorphism(left)
+    def apply(G: nx.Graph, offset: int = 1, isomorphism: Dict = None):
+        if isomorphism is None:return False
+        
+        El_node_id = list(isomorphism.keys())[0]
+        El_node = (El_node_id, G.nodes[El_node_id])
 
         El_node[1]['label'] = 'el'
         (pos_x, pos_y) = El_node[1]['pos']
