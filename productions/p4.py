@@ -1,44 +1,36 @@
 import networkx as nx
-from productions.decorators import first_isomorphism
+from productions.decorators import all_isomorphisms, first_isomorphism
 from typing import Dict
 
 
 class P4():
     left = nx.Graph()
     left.add_node(1, label='I')
+    left.add_node(2, label='E')    
+    left.add_node(3, label='E')
+    left.add_node(4, label='E')
+    left.add_node(5, label='E')
+    left.add_node(6, label='E')
     
-    for i in range(2, 7):
-        left.add_node(i, label='E')
-    
-    # connect middle to the edges
-    left.add_edges_from([(1, i) for i in range(2, 7)])
-    
-    # cycle between edge nodes
-    left.add_edges_from([(i, (i-1)%5 + 2) for i in range(2, 6)])
-    
-    # ******************************TMP*******************************
-    left = nx.Graph()
-    left.add_node(1, label='I')
-    
-    for i in range(2, 6):
-        left.add_node(i, label='E')
-    
+
     # connect middle to the edges
     left.add_edges_from([(1, i) for i in range(2, 6)])
     
-    # cycle between edge nodes
-    left.add_edges_from([(i, (i-1)%4 + 2) for i in range(2, 6)])
-    # ******************************TMP*******************************
+    # edge nodes
+    left.add_edge(2, 6)
+    left.add_edge(6, 3)
+    left.add_edge(3, 5)
+    left.add_edge(5, 4)
+    left.add_edge(4, 2)  
 
 
     #TODO: add decorator for checking grammar predicate (5th edge node is evenly distanced from the two closest nodes)
     @staticmethod
-    @first_isomorphism(left)
-    def apply(G: nx.Graph, offset=1, isomorphism: Dict = None):
-        if isomorphism is None:
+    @all_isomorphisms(left)
+    def apply(G: nx.Graph, offset=1, isomorphisms: list[Dict] = []):
+        if len(isomorphisms) == 0:
+            print('No isomorphisms found')
             return False
-
-        nodes_in_G = list(isomorphism.keys())
 
         # variables
         I_node = None
@@ -48,6 +40,35 @@ class P4():
         origin_x, origin_y, bound_x, bound_y = None, None, None, None
         nodes_count = G.number_of_nodes()
         vertical = True
+        isomorphism = None
+        
+        for isomorphism_candidate in isomorphisms:
+            nodes = list(isomorphism_candidate.keys())
+
+            for node in nodes:
+                neighbors = list(G.neighbors(node))
+                if len(neighbors) == 2:
+                    avg_pos = []
+                    for neighbor in neighbors:
+                        avg_pos.append(G.nodes[neighbor]['pos'])
+                        
+                    vertical = avg_pos[0][1] == avg_pos[1][1]
+
+                    avg_pos = [sum(x)/len(x) for x in zip(*avg_pos)]
+                
+                    if G.nodes[node]['pos'][0] == avg_pos[0] and G.nodes[node]['pos'][1] == avg_pos[1]:
+                        isomorphism = isomorphism_candidate                        
+                        break                    
+                                                
+
+
+        if isomorphism is None:
+            print('No isomorphism found')
+            return False
+
+        nodes_in_G = list(isomorphism.keys())
+
+        
         
         # utility functions
         def add_next_layer_node(label, pos):
@@ -67,7 +88,7 @@ class P4():
             else:
                 origin = min(origin, G.nodes[node]['pos']) if origin is not None else G.nodes[node]['pos']
                 bound = max(bound, G.nodes[node]['pos']) if bound is not None else G.nodes[node]['pos']
-                #TODO: check if it is vertical or horizontal based on number of occurences of each x and y value
+
                 
                 
 
