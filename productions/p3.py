@@ -23,15 +23,12 @@ class P3():
         if isomorphism is None:
             return False
 
-        nodes_in_G = list(isomorphism.keys())
-
         # variables
-        I_node = None
+        prev_nodes_E = []
+        prev_node_I = None
         layer = None
-        prev_I_node = None
-        [origin, bound] = None, None
-        origin_x, origin_y, bound_x, bound_y = None, None, None, None
-        nodes_count = G.number_of_nodes()
+        edge_vectors = [None, None]
+        nodes_count = None
         
         # utility functions
         def add_next_layer_node(label, pos):
@@ -39,81 +36,121 @@ class P3():
             nodes_count += 1
             G.add_node(nodes_count, label=label, pos=pos, layer=layer+1)
             return nodes_count
-
-        # Get data from graph
-        for node in nodes_in_G:
-            if G.nodes[node]['label'] == 'I':
-                I_node = G.nodes[node]
-                layer = I_node['layer']
-                I_node['label'] = 'i'
-                prev_I_node = node
-            else:
-                origin = min(origin, G.nodes[node]['pos']) if origin is not None else G.nodes[node]['pos']
-                bound = max(bound, G.nodes[node]['pos']) if bound is not None else G.nodes[node]['pos']
-
-        dimensions = [bound[i] - origin[i] for i in range(2)]
-
-        new_I_nodes = []
-        # Add middle nodes
-        for k in range(4):
+        
+        def split_based_on_label(nodes_in_G):
+            nodes_E, node_I = [], []
+            [(nodes_E, node_I)[G.nodes[node]['label'] == 'I'].append(node) for node in nodes_in_G]
+            return nodes_E, node_I
+        
+        def calculate_edge_vectors(nodes_E):
+            origin_node = G.nodes[nodes_E[0]]
+            edge_vectors = [
+                [node['pos'][j] - origin_node['pos'][j] for j in range(2)] 
+                for node in [G.nodes[nodes_E[i]] for i in range(1,4)]
+            ]
+            # add all vectors
+            v_sum = [sum([vector[i] for vector in edge_vectors]) for i in range(2)]
+            for vector in edge_vectors:
+                if all([True if v_sum[i] == 2*vector[i] else False for i in range(2)]):
+                    edge_vectors.remove(vector) 
             
-            # calculate indecies 
-            indecies = [2*(k % 2) + 1, 2*(k // 2) + 1]
+            return edge_vectors
+        
+        def assign_variables(debug=False):
+            nonlocal prev_nodes_E, prev_node_I, layer, edge_vectors, nodes_count
+            prev_nodes_E, [prev_node_I] = split_based_on_label(list(isomorphism.keys()))
+            layer = G.nodes[prev_node_I]['layer']
+            edge_vectors = calculate_edge_vectors(prev_nodes_E)
+            nodes_count = G.number_of_nodes()
+            if debug:
+                print('prev_nodes_E:', prev_nodes_E)
+                print('prev_node_I: ', prev_node_I)
+                print('layer:       ', layer)
+                print('edge_vectors:', edge_vectors)
+                print('nodes_count: ', nodes_count)
+                
+        def update_prev_node_I():
+            nonlocal prev_node_I
+            G.nodes[prev_node_I]['label'] = 'i'
+          
+        def calculate_indecies(k, line_length, offset):
+            multiplier = (1-2*offset)/(line_length-1)
+            return [
+                multiplier*(k % line_length) + offset,
+                multiplier*(k // line_length) + offset
+            ]
             
-            size = 4
+        def calculate_position(ind):
+            new_pos = [x for x in G.nodes[prev_nodes_E[0]]['pos']]
+            for j in range(2):
+                new_pos = [new_pos[i] + edge_vectors[j][i]*ind[j] for i in range(2)]
+            return new_pos  
+        
+        def general_add_new_nodes(label, count, line_length, offset, debug=False):
+            new_nodes = []
+            for k in range(count):
+                indecies = calculate_indecies(k, line_length, offset)
+                position = calculate_position(indecies)
             
-            # calculate position
-            position = [origin[i] + dimensions[i]*indecies[i]/size for i in range(2)]
-            
-            s = add_next_layer_node('I', position)
-            new_I_nodes.append(s)
-            
+                s = add_next_layer_node(label, position)
+                new_nodes.append(s)
+                if debug:
+                    print(f'********** k={k} **********')
+                    print('indecies:', indecies)
+                    print('position:', position)
+            return new_nodes
+                
+        def add_new_I_nodes(debug=False):
+            return general_add_new_nodes(
+                label='I', 
+                count=4, 
+                line_length=2, 
+                offset=1./4, 
+                debug=debug
+            )
+        
+        def connect_I_nodes(I_nodes):
             # Add edge between middle nodes and previous middle node
-            G.add_edge(s, prev_I_node)
-            
-        new_E_nodes = []
-        # Add edge nodes
-        for k in range(9):
-            
-            # calculate indecies
-            indecies = [k % 3, k // 3]
-            
-            size = 2
-            
-            # calculate position
-            position = [origin[i] + dimensions[i]*indecies[i]/size for i in range(2)]
-
-            s = add_next_layer_node('E', position)
-            new_E_nodes.append(s)
+            [G.add_edge(s, prev_node_I) for s in I_nodes]
+    
+        def add_new_E_nodes(debug=False):
+            return general_add_new_nodes(
+                label='E',
+                count=9,
+                line_length=3,
+                offset=0,
+                debug=debug
+            )
         
-        # matrix of indecies of nodes connected to each middle node
-        indecies_matrix = [[0, 1, 3, 4]]
-        while len(indecies_matrix) < 4:
-            first = indecies_matrix[0]
-            addition = first[len(indecies_matrix)]
-            indecies_matrix.append([j + addition for j in first]) 
-             
-        # Add edges between edge nodes and middle nodes           
-        for k,indecies in enumerate(indecies_matrix):
-            current_I_node = new_I_nodes[k]
-            #get E nodes from indecies
-            current_E_nodes = [new_E_nodes[i] for i in indecies]
-            G.add_edges_from([(current_I_node, node) for node in current_E_nodes])
+        def connect_E_nodes(E_nodes, I_nodes):
+            # Add edges between middle nodes closest edge nodes
+            indecies_matrix = [[0, 1, 3, 4], [1, 2, 4, 5], [3, 4, 6, 7], [4, 5, 7, 8]]
+            for k, indecies in enumerate(indecies_matrix):
+                I_node = I_nodes[k]
+                [G.add_edge(I_node, node) for node in [E_nodes[i] for i in indecies]]
+            
+            # Add horizontal edges between edge nodes
+            for k in range(3):
+                E_node = E_nodes[(3*k + 1)]
+                indecies = [(3*k + 1) + i for i in [-1, 1]]
+                [G.add_edge(E_node, node) for node in [E_nodes[i] for i in indecies]]
+            
+            # Add vertical edges between edge nodes
+            for k in range(3):
+                E_node = E_nodes[(k+3)]
+                indecies = [(k+3) + 3*i for i in [-1, 1]]
+                [G.add_edge(E_node, node) for node in [E_nodes[i] for i in indecies]]
 
-        # Add horizontal edges between edge nodes
-        for k in range(3):
-            i = 3*k+1
-            start_E_node = new_E_nodes[i]
-            end_E_nodes = [new_E_nodes[j] for j in [i+1, i-1]]
+                
             
-            G.add_edges_from([(start_E_node, node) for node in end_E_nodes])
+        # main function
+        assign_variables(debug=True)
+        update_prev_node_I()
         
-        # Add vertical edges between edge nodes 
-        for k in range(3):
-            i = 3+k
-            start_E_node = new_E_nodes[i]
-            end_E_nodes = [new_E_nodes[j] for j in [i+3, i-3]]
-            
-            G.add_edges_from([(start_E_node, node) for node in end_E_nodes])
+        new_I_nodes = add_new_I_nodes(debug=True)
+        connect_I_nodes(new_I_nodes)
+        
+        new_E_nodes = add_new_E_nodes(debug=True)
+        connect_E_nodes(new_E_nodes, new_I_nodes)
 
         return True
