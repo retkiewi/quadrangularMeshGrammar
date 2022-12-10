@@ -6,26 +6,28 @@ import operator
 
 class P3():
     left = nx.Graph()
-    left.add_node(1, label='I')
     
-    for i in range(2, 6):
+    for i in range(1, 5):
         left.add_node(i, label='E')
+        
+    left.add_node(6, label='I')
     
     # connect middle to the edges
-    left.add_edges_from([(1, i) for i in range(2, 6)])
+    left.add_edges_from([(6, i) for i in range(1, 5)])
     
     # cycle between edge nodes
-    left.add_edges_from([(i, (i-1)%4 + 2) for i in range(2, 6)])
+    left.add_edges_from([(i, (i%4)+1) for i in range(1, 5)])
 
     @staticmethod
     @first_isomorphism(left)
     def apply(G: nx.Graph, isomorphism: Dict = None):
         if isomorphism is None:
+            print('No isomorphisms found')
             return False
 
         # variables
-        prev_nodes_E = []
-        prev_node_I = None
+        origin_E_node = None
+        prev_I_node = None
         layer = None
         edge_vectors = [None, None]
         nodes_count = None
@@ -38,58 +40,57 @@ class P3():
             return nodes_count
         
         def split_based_on_label(nodes_in_G):
-            nodes_E, node_I = [], []
-            [(nodes_E, node_I)[G.nodes[node]['label'] == 'I'].append(node) for node in nodes_in_G]
-            return nodes_E, node_I
+            E_nodes, I_node = [], []
+            [(E_nodes, I_node)[G.nodes[node]['label'] == 'I'].append(node) for node in nodes_in_G]
+            return E_nodes, I_node
         
-        def calculate_edge_vectors(nodes_E):
-            origin_node = G.nodes[nodes_E[0]]
+        def calculate_edge_vectors(origin_node):
+            neighbor_nodes = [node for node in list(G.neighbors(origin_node)) if G.nodes[node]['label'] == 'E']
             edge_vectors = [
-                [node['pos'][j] - origin_node['pos'][j] for j in range(2)] 
-                for node in [G.nodes[nodes_E[i]] for i in range(1,4)]
+                [node['pos'][j] - G.nodes[origin_node]['pos'][j] for j in range(2)] 
+                for node in [G.nodes[node] for node in neighbor_nodes]
             ]
-            # add all vectors
-            v_sum = [sum([vector[i] for vector in edge_vectors]) for i in range(2)]
-            for vector in edge_vectors:
-                if all([True if v_sum[i] == 2*vector[i] else False for i in range(2)]):
-                    edge_vectors.remove(vector) 
             
             return edge_vectors
         
         def assign_variables(debug=False):
-            nonlocal prev_nodes_E, prev_node_I, layer, edge_vectors, nodes_count
-            prev_nodes_E, [prev_node_I] = split_based_on_label(list(isomorphism.keys()))
-            layer = G.nodes[prev_node_I]['layer']
-            edge_vectors = calculate_edge_vectors(prev_nodes_E)
+            nonlocal origin_E_node, prev_I_node, layer, edge_vectors, nodes_count
+            prev_E_nodes, [prev_I_node] = split_based_on_label(list(isomorphism.keys()))
+            layer = G.nodes[prev_I_node]['layer']
+            origin_index = prev_E_nodes[0]
+            origin_E_node = G.nodes[origin_index]
+            edge_vectors = calculate_edge_vectors(origin_index)
             nodes_count = G.number_of_nodes()
             if debug:
-                print('prev_nodes_E:', prev_nodes_E)
-                print('prev_node_I: ', prev_node_I)
+                print('prev_E_nodes:', prev_E_nodes)
+                print('prev_I_node: ', prev_I_node)
                 print('layer:       ', layer)
                 print('edge_vectors:', edge_vectors)
                 print('nodes_count: ', nodes_count)
                 
-        def update_prev_node_I():
-            nonlocal prev_node_I
-            G.nodes[prev_node_I]['label'] = 'i'
+        def update_prev_I_node():
+            nonlocal prev_I_node
+            G.nodes[prev_I_node]['label'] = 'i'
           
-        def calculate_indecies(k, line_length, offset):
-            multiplier = (1-2*offset)/(line_length-1)
+        def calculate_indecies(k, count, line_length, offset_x, offset_y):
+            multiplier_x = (1-2*offset_x)/(line_length-1)
+            multiplier_y = (1-2*offset_y)/(count//line_length-1)
+            
             return [
-                multiplier*(k % line_length) + offset,
-                multiplier*(k // line_length) + offset
+                multiplier_x*(k % line_length) + offset_x,
+                multiplier_y*(k // line_length) + offset_y
             ]
             
         def calculate_position(ind):
-            new_pos = [x for x in G.nodes[prev_nodes_E[0]]['pos']]
+            new_pos = [x for x in origin_E_node['pos']]
             for j in range(2):
                 new_pos = [new_pos[i] + edge_vectors[j][i]*ind[j] for i in range(2)]
             return new_pos  
         
-        def general_add_new_nodes(label, count, line_length, offset, debug=False):
+        def general_add_new_nodes(label, count, line_length, offset_x, offset_y=None, debug=False):
             new_nodes = []
             for k in range(count):
-                indecies = calculate_indecies(k, line_length, offset)
+                indecies = calculate_indecies(k, count, line_length, offset_x, offset_y if offset_y else offset_x)
                 position = calculate_position(indecies)
             
                 s = add_next_layer_node(label, position)
@@ -105,20 +106,20 @@ class P3():
                 label='I', 
                 count=4, 
                 line_length=2, 
-                offset=1./4, 
+                offset_x=1./4, 
                 debug=debug
             )
         
         def connect_I_nodes(I_nodes):
             # Add edge between middle nodes and previous middle node
-            [G.add_edge(s, prev_node_I) for s in I_nodes]
+            [G.add_edge(s, prev_I_node) for s in I_nodes]
     
         def add_new_E_nodes(debug=False):
             return general_add_new_nodes(
                 label='E',
                 count=9,
                 line_length=3,
-                offset=0,
+                offset_x=0,
                 debug=debug
             )
         
@@ -140,17 +141,17 @@ class P3():
                 E_node = E_nodes[(k+3)]
                 indecies = [(k+3) + 3*i for i in [-1, 1]]
                 [G.add_edge(E_node, node) for node in [E_nodes[i] for i in indecies]]
-
-                
-            
-        # main function
-        assign_variables(debug=True)
-        update_prev_node_I()
         
-        new_I_nodes = add_new_I_nodes(debug=True)
+        
+        
+        # main function
+        assign_variables()
+        update_prev_I_node()
+        
+        new_I_nodes = add_new_I_nodes()
         connect_I_nodes(new_I_nodes)
         
-        new_E_nodes = add_new_E_nodes(debug=True)
+        new_E_nodes = add_new_E_nodes()
         connect_E_nodes(new_E_nodes, new_I_nodes)
 
         return True
