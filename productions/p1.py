@@ -9,7 +9,7 @@ class P1():
 
     @staticmethod
     @first_isomorphism(left)
-    def apply(G: nx.Graph, offset: int = 1, isomorphism: Dict = None):
+    def apply(G: nx.Graph, isomorphism: Dict = None):
         if isomorphism is None:
             return False
 
@@ -17,35 +17,21 @@ class P1():
         El_node = (El_node_id, G.nodes[El_node_id])
 
         El_node[1]['label'] = 'el'
-        (pos_x, pos_y) = El_node[1]['pos']
         layer = El_node[1]['layer']
+        size = G.number_of_nodes()
 
-        G.add_node(El_node[0]+1, label='I',
-                   pos=(pos_x, pos_y-offset), layer=layer+1)
-        G.add_edge(El_node[0], El_node[0]+1)
+        G.add_node(size + 1, label='I', pos=(1/2, 1/2), layer=layer+1)
+        G.add_edge(size, size+1)
 
-        I_node = (El_node[0]+1, G.nodes[El_node[0]+1])
-        (pos_x, pos_y) = I_node[1]['pos']
+        G.add_node(size + 2, label='E', pos=(0,0), layer=layer+1)
+        G.add_node(size + 3, label='E', pos=(1,0), layer=layer+1)
+        G.add_node(size + 4, label='E', pos=(0,1), layer=layer+1)
+        G.add_node(size + 5, label='E', pos=(1,1), layer=layer+1)
 
-        G.add_node(I_node[0]+1, label='E', pos=(pos_x -
-                   offset/2, pos_y-offset/2), layer=layer+1)
-        G.add_edge(I_node[0], I_node[0]+1)
-
-        G.add_node(I_node[0]+2, label='E', pos=(pos_x +
-                   offset/2, pos_y-offset/2), layer=layer+1)
-        G.add_edge(I_node[0], I_node[0]+2)
-
-        G.add_node(I_node[0]+3, label='E', pos=(pos_x +
-                   offset/2, pos_y+offset/2), layer=layer+1)
-        G.add_edge(I_node[0], I_node[0]+3)
-
-        G.add_node(I_node[0]+4, label='E', pos=(pos_x -
-                   offset/2, pos_y+offset/2), layer=layer+1)
-        G.add_edge(I_node[0], I_node[0]+4)
-
-        G.add_edge(I_node[0]+1, I_node[0]+2)
-        G.add_edge(I_node[0]+2, I_node[0]+3)
-        G.add_edge(I_node[0]+3, I_node[0]+4)
-        G.add_edge(I_node[0]+4, I_node[0]+1)
+        G.add_edges_from([(size + 1, size + i) for i in (2, 3, 4, 5)])
+        G.add_edge(size + 2, size + 3)
+        G.add_edge(size + 2, size + 4)
+        G.add_edge(size + 3, size + 5)
+        G.add_edge(size + 4, size + 5)
 
         return True
