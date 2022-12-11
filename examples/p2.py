@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import networkx as nx
 from productions import P1, P2
 from visualization import draw_graph
