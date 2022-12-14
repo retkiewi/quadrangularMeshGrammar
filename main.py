@@ -7,7 +7,7 @@ from visualization import draw_graph
 
 
 def main(args):
-    variant =-1
+    variant =1
     G = nx.Graph()
     if(variant == -1):
         # edge nodes 
@@ -60,7 +60,6 @@ def main(args):
         # create loop around the edges
         [G.add_edge(i, (i%4)+1) for i in range(1, 5)]
         
-        print(P3.apply(G))
     elif (variant == 2):
         # edge nodes 
         G.add_node(1, label='E', pos=(5.5, -1), layer=0)
