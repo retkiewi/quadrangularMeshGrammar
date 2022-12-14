@@ -1,5 +1,5 @@
 import networkx as nx
-from productions.decorators import all_isomorphisms, first_isomorphism
+from productions.decorators import all_isomorphisms
 from typing import Dict
 
 
@@ -50,8 +50,6 @@ class P4():
                 avg_pos = []
                 for neighbor in neighbors:
                     avg_pos.append(G.nodes[neighbor]['pos'])
-                    
-                vertical = avg_pos[0][1] == avg_pos[1][1]
 
                 avg_pos = [sum(x)/len(x) for x in zip(*avg_pos)]
                 hanging_node_pos = G.nodes[hanging_node]['pos']

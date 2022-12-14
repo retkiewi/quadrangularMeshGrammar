@@ -6,7 +6,7 @@ from productions import P4
 # from visualization import draw_graph
 
 
-def test_p4_1():
+def test_p4_horizontal():
     G = nx.Graph()
     G.add_node(1, label='I', pos=(0.5, 0.5), layer=0)
     G.add_node(2, label='E', pos=(0, 0), layer=0)    
@@ -28,7 +28,23 @@ def test_p4_1():
     G.add_edge(6, 2)
     assert True == P4.apply(G)
 
-def test_p4_2():
+    assert G.nodes[9]['pos'][0] == 1.0
+    assert G.nodes[9]['pos'][1] == 0.0
+
+    assert G.nodes[10]['pos'][0] == 0.5
+    assert G.nodes[10]['pos'][1] == 0.0
+
+    assert G.nodes[11]['pos'][0] == 0.0
+    assert G.nodes[11]['pos'][1] == 0.0
+
+    assert G.nodes[12]['pos'][0] == 1.0
+    assert G.nodes[12]['pos'][1] == 1.0
+
+    assert G.nodes[13]['pos'][0] == 0.5
+    assert G.nodes[13]['pos'][1] == 1.0
+
+
+def test_p4_vertical():
     G = nx.Graph()
     G.add_node(1, label='I', pos=(0.5, 0.5), layer=0)
     G.add_node(2, label='E', pos=(0, 0), layer=0)    
@@ -49,7 +65,7 @@ def test_p4_2():
     G.add_edge(4, 2)
     assert True == P4.apply(G)
 
-def test_p4_3():
+def test_p4_wrong_hanging_node_position():
     G = nx.Graph()
     G.add_node(1, label='I', pos=(0.5, 0.5), layer=0)
     G.add_node(2, label='E', pos=(0, 0), layer=0)    

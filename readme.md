@@ -27,3 +27,7 @@ This is a group project for the 'Graph grammars' class. The goal of this project
 ### Run the example script to validate the environment
 
 - `python main.py`
+
+### Run the tests
+
+- `python -m pytest`
