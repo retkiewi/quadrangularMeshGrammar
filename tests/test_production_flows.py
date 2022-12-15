@@ -47,11 +47,13 @@ def test_p1_p2_p2_p2_should_create_correct_structure():
         {'label': 'E', 'pos': (1, 1), 'layer': 3},
     ]
 
-    assert len(G.nodes()) == len(expected_nodes)
+    def key_fn(data: dict):
+        return tuple(data.values())
 
-    for _, data in G.nodes(data=True):
-        assert data in expected_nodes
-        expected_nodes.remove(data)
+    received_nodes = list(zip(*G.nodes(data=True)))[1]
+
+    assert sorted(received_nodes, key=key_fn) == sorted(
+        expected_nodes, key=key_fn)
 
     assert {(1, 2), (2, 3), (2, 4), (2, 5), (2, 6), (3, 4),
             (3, 5), (4, 6), (5, 6), (2, 7), (7, 9), (7, 10),
