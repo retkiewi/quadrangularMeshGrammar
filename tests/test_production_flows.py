@@ -2,7 +2,7 @@ import networkx as nx
 from productions import P1, P2
 
 
-def test_p1_p2_flow_should_create_correct_structure():
+def test_p1_p2_p2_p2_should_create_correct_structure():
     G = nx.Graph()
     G.add_node(1, label='El', pos=(1/2, 1/2), layer=0)
 
@@ -51,6 +51,7 @@ def test_p1_p2_flow_should_create_correct_structure():
 
     for _, data in G.nodes(data=True):
         assert data in expected_nodes
+        expected_nodes.remove(data)
 
     assert {(1, 2), (2, 3), (2, 4), (2, 5), (2, 6), (3, 4),
             (3, 5), (4, 6), (5, 6), (2, 7), (7, 9), (7, 10),
