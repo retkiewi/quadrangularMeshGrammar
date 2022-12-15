@@ -22,7 +22,6 @@ class P2():
             return False
 
         nodes_in_G = list(isomorphism.keys())
-        
         E_pos = []
         I_node = None
         I_node_id = None
@@ -34,7 +33,6 @@ class P2():
                 E_pos.append(G.nodes[node]['pos'])
 
         I_node['label'] = 'i'
-        
         layer = I_node['layer']
         pos = sorted(E_pos, key=lambda e: (e[1], e[0]))
         [(x1,y1), (x2,y2), (x3,y3), (x4,y4)] = pos
