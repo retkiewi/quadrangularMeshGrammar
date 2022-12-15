@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import networkx as nx
 import pytest
-from visualization import draw_graph
 
 from productions import P2
 
