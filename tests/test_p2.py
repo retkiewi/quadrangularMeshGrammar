@@ -5,7 +5,7 @@ import pytest
 from productions import P2
 
 @pytest.fixture
-def initial_full_graph():
+def G():
     G = nx.Graph()
     G.add_node(1, label='el', pos=(1/2, 1/2), layer=0)
     G.add_node(2, label='I', pos=(1/2, 1/2), layer=1)
@@ -19,9 +19,7 @@ def initial_full_graph():
 
     return G
 
-def test_p2_should_be_applied_full_proper_graph(initial_full_graph):
-    G = initial_full_graph
-
+def test_p2_should_be_applied_full_proper_graph(G):
     assert True == P2.apply(G)
 
     assert [
@@ -46,53 +44,39 @@ def test_p2_should_be_applied_full_proper_graph(initial_full_graph):
     (7, 9), (7, 12), (9, 12), (8, 10), (10, 13), (2, 3), (8, 13), (2, 6)} == set(G.edges)
 
 
-def test_p2_should_be_applied_without_edge_to_initial_node(initial_full_graph):
-    G = initial_full_graph
-    
+def test_p2_should_be_applied_without_edge_to_initial_node(G):
     G.remove_edge(1, 2)
 
     assert True == P2.apply(G)
 
 
-def test_p2_should_be_applied_with_wrong_label_in_initial_node(initial_full_graph):
-    G = initial_full_graph
-    
+def test_p2_should_be_applied_with_wrong_label_in_initial_node(G):
     G.nodes[1]['label'] = 'WRONG LABEL'
 
     assert True == P2.apply(G)
 
-def test_p2_should_not_be_applied_because_of_missing_outer_edge(initial_full_graph):
-    G = initial_full_graph
-    
+def test_p2_should_not_be_applied_because_of_missing_outer_edge(G):
     G.remove_edge(5, 6)
 
     assert False == P2.apply(G)
 
-def test_p2_should_not_be_applied_because_of_missing_inner_edge(initial_full_graph):
-    G = initial_full_graph
-    
+def test_p2_should_not_be_applied_because_of_missing_inner_edge(G):
     G.remove_edge(2, 6)
 
     assert False == P2.apply(G)
 
-def test_p2_should_not_be_applied_because_of_wrong_outer_label(initial_full_graph):
-    G = initial_full_graph
-    
+def test_p2_should_not_be_applied_because_of_wrong_outer_label(G):
     G.nodes[6]['label'] = 'WRONG LABEL'
 
     assert False == P2.apply(G)
 
-def test_p2_should_not_be_applied_because_of_wrong_inner_label(initial_full_graph):
-    G = initial_full_graph
-    
+def test_p2_should_not_be_applied_because_of_wrong_inner_label(G):
     G.nodes[2]['label'] = 'WRONG LABEL'
 
     assert False == P2.apply(G)
 
 
-def test_p2_should_not_be_applied_because_of_surplus_node(initial_full_graph):
-    G = initial_full_graph
-
+def test_p2_should_not_be_applied_because_of_surplus_node(G):
     G.remove_edge(4, 5)
     G.add_node(7, label='E', pos=(2, 1), layer=1)
     G.add_edge(4, 7)
