@@ -12,46 +12,43 @@ def test_p1_p2_p2_p2_should_create_correct_structure():
     assert True == P2.apply(G)
 
     expected_nodes = [
-        {'label': 'el', 'pos': (0.5, 0.5), 'layer': 0},
-        {'label': 'i', 'pos': (0.5, 0.5), 'layer': 1},
-        {'label': 'E', 'pos': (0, 0), 'layer': 1},
-        {'label': 'E', 'pos': (1, 0), 'layer': 1},
-        {'label': 'E', 'pos': (0, 1), 'layer': 1},
-        {'label': 'E', 'pos': (1, 1), 'layer': 1},
+        (1, {'label': 'el', 'pos': (0.5, 0.5), 'layer': 0}),
+        (2, {'label': 'i', 'pos': (0.5, 0.5), 'layer': 1}),
+        (3, {'label': 'E', 'pos': (0, 0), 'layer': 1}),
+        (4, {'label': 'E', 'pos': (1, 0), 'layer': 1}),
+        (5, {'label': 'E', 'pos': (0, 1), 'layer': 1}),
+        (6, {'label': 'E', 'pos': (1, 1), 'layer': 1}),
         # SECOND LAYER
-        {'label': 'i', 'pos': (0.25, 0.5), 'layer': 2},
-        {'label': 'i', 'pos': (0.75, 0.5), 'layer': 2},
-        {'label': 'E', 'pos': (0, 0), 'layer': 2},
-        {'label': 'E', 'pos': (0.5, 0), 'layer': 2},
-        {'label': 'E', 'pos': (0, 1), 'layer': 2},
-        {'label': 'E', 'pos': (0.5, 1), 'layer': 2},
-        {'label': 'E', 'pos': (1, 0), 'layer': 2},
-        {'label': 'E', 'pos': (1, 1), 'layer': 2},
+        (7, {'label': 'i', 'pos': (0.25, 0.5), 'layer': 2}),
+        (8, {'label': 'i', 'pos': (0.75, 0.5), 'layer': 2}),
+        (9, {'label': 'E', 'pos': (0, 0), 'layer': 2}),
+        (10, {'label': 'E', 'pos': (0.5, 0.), 'layer': 2}),
+        (11, {'label': 'E', 'pos': (1, 0), 'layer': 2}),
+        (12, {'label': 'E', 'pos': (0, 1), 'layer': 2}),
+        (13, {'label': 'E', 'pos': (0.5, 1.), 'layer': 2}),
+        (14, {'label': 'E', 'pos': (1, 1), 'layer': 2}),
         # THIRD LAYER
-        {'label': 'I', 'pos': (0.125, 0.5), 'layer': 3},
-        {'label': 'I', 'pos': (0.375, 0.5), 'layer': 3},
-        {'label': 'E', 'pos': (0, 0), 'layer': 3},
-        {'label': 'E', 'pos': (0.25, 0), 'layer': 3},
-        {'label': 'E', 'pos': (0, 1), 'layer': 3},
-        {'label': 'E', 'pos': (0.25, 1), 'layer': 3},
-        {'label': 'E', 'pos': (0.5, 0), 'layer': 3},
-        {'label': 'E', 'pos': (0.5, 1), 'layer': 3},
+        (15, {'label': 'I', 'pos': (0.125, 0.5), 'layer': 3}),
+        (16, {'label': 'I', 'pos': (0.375, 0.5), 'layer': 3}),
+        (17, {'label': 'E', 'pos': (0, 0), 'layer': 3}),
+        (18, {'label': 'E', 'pos': (0.25, 0.), 'layer': 3}),
+        (19, {'label': 'E', 'pos': (0.5, 0.), 'layer': 3}),
+        (20, {'label': 'E', 'pos': (0, 1), 'layer': 3}),
+        (21, {'label': 'E', 'pos': (0.25, 1.), 'layer': 3}),
+        (22, {'label': 'E', 'pos': (0.5, 1.), 'layer': 3}),
 
-        {'label': 'I', 'pos': (0.625, 0.5), 'layer': 3},
-        {'label': 'I', 'pos': (0.875, 0.5), 'layer': 3},
-        {'label': 'E', 'pos': (0.5, 0), 'layer': 3},
-        {'label': 'E', 'pos': (0.75, 0), 'layer': 3},
-        {'label': 'E', 'pos': (0.5, 1), 'layer': 3},
-        {'label': 'E', 'pos': (0.75, 1), 'layer': 3},
-        {'label': 'E', 'pos': (1, 0), 'layer': 3},
-        {'label': 'E', 'pos': (1, 1), 'layer': 3},
+        (23, {'label': 'I', 'pos': (0.625, 0.5), 'layer': 3}),
+        (24, {'label': 'I', 'pos': (0.875, 0.5), 'layer': 3}),
+        (25, {'label': 'E', 'pos': (0.5, 0.), 'layer': 3}),
+        (26, {'label': 'E', 'pos': (0.75, 0.), 'layer': 3}),
+        (27, {'label': 'E', 'pos': (1, 0), 'layer': 3}),
+        (28, {'label': 'E', 'pos': (0.5, 1), 'layer': 3}),
+        (29, {'label': 'E', 'pos': (0.75, 1), 'layer': 3}),
+        (30, {'label': 'E', 'pos': (1, 1), 'layer': 3}),
     ]
 
-    assert len(G.nodes()) == len(expected_nodes)
-
-    for _, data in G.nodes(data=True):
-        assert data in expected_nodes
-        expected_nodes.remove(data)
+    assert sorted(expected_nodes, key=lambda val: val[0]) == sorted(
+        G.nodes(data=True), key=lambda val: val[0])
 
     assert {(1, 2), (2, 3), (2, 4), (2, 5), (2, 6), (3, 4),
             (3, 5), (4, 6), (5, 6), (2, 7), (7, 9), (7, 10),
