@@ -69,7 +69,7 @@ def test_p2_should_not_be_applied_because_of_missing_outer_edge(initial_full_gra
 
     assert False == P2.apply(G)
 
-def test_p2_should_not_be_applied_because_of_inner_edge(initial_full_graph):
+def test_p2_should_not_be_applied_because_of_missing_inner_edge(initial_full_graph):
     G = initial_full_graph
     
     G.remove_edge(2, 6)
