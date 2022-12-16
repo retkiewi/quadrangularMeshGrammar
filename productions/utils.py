@@ -28,11 +28,12 @@ def find_isomorphisms_for_p13(G_main: Graph, G_to_find: Graph) -> List[Dict]:
         for node in nodes_in_graph:
             if G_main.nodes[node]['label'] == 'E':
                 adjacency = G_main.adj[node]
-                I_adj_counter = 0
+                is_connected_to_i = False
                 for neighbour in adjacency:
-                    if G_main.nodes[neighbour]['label'] == 'I':
-                        I_adj_counter += 1
-                if I_adj_counter < 2 or len(adjacency) == 4:
+                    if G_main.nodes[neighbour]['label'] == 'i':
+                        is_connected_to_i = True
+                        break
+                if not is_connected_to_i:
                     E_coeff.add(G_main.nodes[node]['pos'])
                     E_nodes.append(node)
         if len(E_coeff) != 3:

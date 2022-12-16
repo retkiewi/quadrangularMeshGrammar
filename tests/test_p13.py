@@ -7,8 +7,8 @@ from productions import P13
 def get_basic_graph():
     basic_graph = nx.Graph()
     basic_graph.add_node(1, label='E', pos=(0, 6), layer=0)
-    basic_graph.add_node(2, label='I', pos=(-1, 5), layer=0)
-    basic_graph.add_node(3, label='I', pos=(1, 5), layer=0)
+    basic_graph.add_node(2, label='i', pos=(-1, 5), layer=0)
+    basic_graph.add_node(3, label='i', pos=(1, 5), layer=0)
     basic_graph.add_node(4, label='I', pos=(-2, 3), layer=0)
     basic_graph.add_node(5, label='I', pos=(-2, 1), layer=0)
     basic_graph.add_node(6, label='I', pos=(2, 2), layer=0)
@@ -40,8 +40,8 @@ def test_p13_should_apply_basic():
     assert P13.apply(G) is True
 
     assert [(1, {'label': 'E', 'pos': (0, 6), 'layer': 0}),
-            (2, {'label': 'I', 'pos': (-1, 5), 'layer': 0}),
-            (3, {'label': 'I', 'pos': (1, 5), 'layer': 0}),
+            (2, {'label': 'i', 'pos': (-1, 5), 'layer': 0}),
+            (3, {'label': 'i', 'pos': (1, 5), 'layer': 0}),
             (4, {'label': 'I', 'pos': (-2, 3), 'layer': 0}),
             (5, {'label': 'I', 'pos': (-2, 1), 'layer': 0}),
             (6, {'label': 'I', 'pos': (2, 2), 'layer': 0}),
@@ -65,8 +65,8 @@ def test_p13_should_apply_with_added_nodes():
     assert P13.apply(G) is True
 
     assert [(1, {'label': 'E', 'pos': (0, 6), 'layer': 0}),
-            (2, {'label': 'I', 'pos': (-1, 5), 'layer': 0}),
-            (3, {'label': 'I', 'pos': (1, 5), 'layer': 0}),
+            (2, {'label': 'i', 'pos': (-1, 5), 'layer': 0}),
+            (3, {'label': 'i', 'pos': (1, 5), 'layer': 0}),
             (4, {'label': 'I', 'pos': (-2, 3), 'layer': 0}),
             (5, {'label': 'I', 'pos': (-2, 1), 'layer': 0}),
             (6, {'label': 'I', 'pos': (2, 2), 'layer': 0}),
@@ -112,7 +112,7 @@ def test_p13_should_not_apply_node_label_changed():
     for i in range(1, 12):
         G = get_basic_graph()
 
-        G.nodes[i]['label'] = 'i'
+        G.nodes[i]['label'] = 'm'
 
         assert P13.apply(G) is False
 
@@ -120,8 +120,8 @@ def test_p13_should_not_apply_node_label_changed():
 def test_p13_should_not_apply_wrong_coordinates_1():
     G = nx.Graph()
     G.add_node(1, label='E', pos=(0, 6), layer=0)
-    G.add_node(2, label='I', pos=(-1, 5), layer=0)
-    G.add_node(3, label='I', pos=(1, 5), layer=0)
+    G.add_node(2, label='i', pos=(-1, 5), layer=0)
+    G.add_node(3, label='i', pos=(1, 5), layer=0)
     G.add_node(4, label='I', pos=(-2, 3), layer=0)
     G.add_node(5, label='I', pos=(-2, 1), layer=0)
     G.add_node(6, label='I', pos=(2, 2), layer=0)
@@ -151,8 +151,8 @@ def test_p13_should_not_apply_wrong_coordinates_1():
 def test_p13_should_not_apply_wrong_coordinates_2():
     G = nx.Graph()
     G.add_node(1, label='E', pos=(0, 6), layer=0)
-    G.add_node(2, label='I', pos=(-1, 5), layer=0)
-    G.add_node(3, label='I', pos=(1, 5), layer=0)
+    G.add_node(2, label='i', pos=(-1, 5), layer=0)
+    G.add_node(3, label='i', pos=(1, 5), layer=0)
     G.add_node(4, label='I', pos=(-2, 3), layer=0)
     G.add_node(5, label='I', pos=(-2, 1), layer=0)
     G.add_node(6, label='I', pos=(2, 2), layer=0)
@@ -182,8 +182,8 @@ def test_p13_should_not_apply_wrong_coordinates_2():
 def test_p13_should_not_apply_wrong_coordinates_3():
     G = nx.Graph()
     G.add_node(1, label='E', pos=(0, 6), layer=0)
-    G.add_node(2, label='I', pos=(-1, 5), layer=0)
-    G.add_node(3, label='I', pos=(1, 5), layer=0)
+    G.add_node(2, label='i', pos=(-1, 5), layer=0)
+    G.add_node(3, label='i', pos=(1, 5), layer=0)
     G.add_node(4, label='I', pos=(-2, 3), layer=0)
     G.add_node(5, label='I', pos=(-2, 1), layer=0)
     G.add_node(6, label='I', pos=(2, 2), layer=0)

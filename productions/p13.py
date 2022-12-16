@@ -5,8 +5,8 @@ from typing import Dict
 class P13:
     left = nx.Graph()
     left.add_node(1, label='E')
-    left.add_node(2, label='I')
-    left.add_node(3, label='I')
+    left.add_node(2, label='i')
+    left.add_node(3, label='i')
     left.add_node(4, label='I')
     left.add_node(5, label='I')
     left.add_node(6, label='I')
@@ -43,11 +43,12 @@ class P13:
         for node in nodes_in_G:
             if G.nodes[node]['label'] == 'E':
                 adjacency = G.adj[node]
-                I_adj_counter = 0
+                is_connected_to_i = False
                 for neighbour in adjacency:
-                    if G.nodes[neighbour]['label'] == 'I':
-                        I_adj_counter += 1
-                if I_adj_counter < 2 or len(adjacency) == 4:
+                    if G.nodes[neighbour]['label'] == 'i':
+                        is_connected_to_i = True
+                        break
+                if not is_connected_to_i:
                     E_nodes.append(node)
                     E_coeff.add(G.nodes[node]['pos'])
 
