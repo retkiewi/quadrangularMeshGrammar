@@ -69,9 +69,9 @@ class P13:
                 if to_remove:
                     to_remove_1 = node
                     for neighbour in adjacency:
-                        if G.nodes[neighbour]['label'] == 'E':
+                        if G.nodes[neighbour]['label'] == 'E' and neighbour in nodes_in_G:
                             to_remove_2 = neighbour
-                        if G.nodes[neighbour]['label'] == 'I':
+                        if G.nodes[neighbour]['label'] == 'I' and neighbour in nodes_in_G:
                             I_to_connect = neighbour
                     break
 
