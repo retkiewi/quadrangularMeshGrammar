@@ -54,7 +54,7 @@ def draw_graph(graph: nx.Graph, layer=None):
         visual_pos = {node: map_pos_to_visual_pos(
             data['pos'], data['layer']) for node, data in graph.nodes(data=True)}
 
-    labels = get_labels_with_duplicated_pos(labels, visual_pos)
+    labels = relabel_labels_with_duplicated_pos(labels, visual_pos)
 
     nx.draw(graph, pos=visual_pos,
             labels=labels, font_size=12,

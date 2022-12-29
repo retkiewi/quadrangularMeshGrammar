@@ -27,6 +27,11 @@ jobs:
           pip --version
           pip install -r requirements.txt
 
+      - name: Run app
+        run: |
+          export MPLBACKEND=Agg
+          python main.py
+
       - name: Install test dependencies
         run: pip install pytest
 
