@@ -7,5 +7,5 @@ def main(args):
     p12.show_prim()
 
 if __name__ == '__main__':
-    parser  = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser()
     main(parser.parse_args(sys.argv[1:]))

@@ -39,8 +39,8 @@ class P2():
 
         size = G.number_of_nodes()
 
-        G.add_node(size+1, label='I', pos=((3*x1 + x2)/4, (y1 + y3)/2), layer=layer+1)
-        G.add_node(size+2, label='I', pos=((x1 + 3*x2)/4, (y2 + y4)/2), layer=layer+1)
+        G.add_node(size+1, label='I', pos=(((x2+x1)/2 + x3)/2,((y2+y1)/2 + y3)/2), layer=layer+1)
+        G.add_node(size+2, label='I', pos=(((x3+x4)/2 + x2)/2,((y3+y4)/2 + y2)/2), layer=layer+1)
         G.add_edge(size+1, I_node_id)
         G.add_edge(size+2, I_node_id)
 
